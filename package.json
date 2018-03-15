@@ -1,0 +1,24 @@
+{
+  "name": "data-profile",
+  "version": "0.1.0",
+  "description": "Sandbox to test out ideas for profiling document data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate": "./generator.js | prettier > customers.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmakeig/data-profile.git"
+  },
+  "author": "Justin Makeig <jmpublic+github@makeig.com> (https://github.com/jmakeig)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/jmakeig/data-profile/issues"
+  },
+  "homepage": "https://github.com/jmakeig/data-profile#readme",
+  "devDependencies": {
+    "faker": "^4.1.0",
+    "prettier": "^1.11.1"
+  }
+}
