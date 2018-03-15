@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Instance Profile</title>
+  <style type="text/css">
+    body {
+      font-family: 'Helvetica Neue', Helvetica, sans-serif;
+      padding: 0.5em 1em;
+    }
+    table.entity {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'InputMono', 'Consolas', monospace; 
+    }
+    th, td {
+      padding: 0.25em 0.5em;
+      vertical-align: top;
+      text-align: left;
+      border: solid 1px #ccc;
+    }
+    thead {}
+    thead th {
+      font-weight: normal;
+    }
+    thead > tr:last-child {
+      border-bottom: solid 2px #333;
+    }
+    pre {
+      font-family: 'InputMono', 'Consolas', monospace; 
+    }
+  </style>
+  <script type="text/javascript">
+  
+  </script>
+</head>
+<body>
+  <h1>Customer</h1>
+  <p class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris ac quam tempus, finibus velit sed, lacinia leo. Morbi id commodo risus, sed fermentum tellus. Nam sit amet condimentum nisi. Nullam et sem et lorem pulvinar blandit. Quisque et sodales odio. Quisque non pretium diam, quis interdum libero. Integer tortor nisl, elementum in molestie et, ultricies vitae libero. </p>
+  <ul>
+    <li>Mixed content</li>
+    <li>Data types</li>
+  </ul>
+  <table class="entity xml">
+    <thead>
+      <tr data-level="0">
+        <th colspan="7">customer</th>
+      </tr>
+      <tr data-level="1">
+        <th colspan="1" rowspan="2" id="customer.@id" data-parent="customer">@id</th>
+        <th colspan="2" id="customer.name" data-parent="customer">name</th>
+        <th colspan="3" id="customer.address" data-parent="customer">address</th>
+        <th colspan="1" rowspan="2" id="customer.verified" data-parent="customer">verified</th>
+      </tr>
+      <tr data-level="2">
+        <th id="customer.name.first" data-parent="customer.name">first</th>
+        <th id="customer.name.family" data-parent="customer.name">family</th>
+        <th id="customer.name.street" data-parent="customer.address">street</th>
+        <th id="customer.address.city" data-parent="customer.address">city</th>
+        <th id="customer.address.zip" data-parent="customer.address">zip</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-parent="customer.name.@id">148b434b-f4fc-4d91-896f-9e72c0a2d83e</td>
+        <td data-parent="customer.name.first">Sam</td>
+        <td data-parent="customer.name.family">McDaniel</td>
+        <td data-parent="customer.address.city">Pittsburgh</td>
+        <td data-parent="customer.address.street">33 Main Street</td>
+        <td data-parent="customer.address.zip">15204</td>
+        <td data-parent="customer.address.verified">true</td>
+      </tr>
+    </tbody>
+  </table>
+  <pre>
+&lt;customer id="148b434b-f4fc-4d91-896f-9e72c0a2d83e"&gt;
+  &lt;name&gt;
+    &lt;first&gt;Sam&lt;/first&gt;
+    &lt;family&gt;McDaniel&lt;/family&gt;
+  &lt;/name&gt;
+  &lt;address&gt;
+    &lt;street&gt;33 Main Street&lt;/street&gt;
+    &lt;city&gt;Pittsburgh&lt;/city&gt;
+    &lt;zip&gt;15204&lt;/zip&gt;
+  &lt;/address&gt;
+  &lt;verified&gt;true&lt;/verified&gt;
+&lt;/customer&gt;
+  </pre>
+</body>
+</html>
