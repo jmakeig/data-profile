@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 const f = require('faker');
-const out = [];
-for (let i = 0; i < 100; i++) {
-  out.push({
+
+const customers = [];
+for (let i = 0; i < 1000; i++) {
+  customers.push({
     id: f.random.uuid(),
     name: { first: f.name.firstName(), last: f.name.lastName() },
     address: {
@@ -14,4 +15,4 @@ for (let i = 0; i < 100; i++) {
     verified: f.random.boolean()
   });
 }
-console.log(out);
+process.stdout.write(JSON.stringify(customers, null, 2));
