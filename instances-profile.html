@@ -251,13 +251,13 @@
           replaceChildren(
             document.querySelector('tbody'),
             customers.map(customer => tr(
-              td(customer.id),
-              td(customer.name.first),
-              td(customer.name.last),
-              td(customer.address.street),
-              td(customer.address.city),
-              td(customer.address.zip),
-              td(String(customer.verified))))
+              td({ dataset: { parent: 'customer.id' } }, customer.id),
+              td({ dataset: { parent: 'customer.name.first' } }, customer.name.first),
+              td({ dataset: { parent: 'customer.name.last' } }, customer.name.last),
+              td({ dataset: { parent: 'customer.address.street' } }, customer.address.street),
+              td({ dataset: { parent: 'customer.address.city' } }, customer.address.city),
+              td({ dataset: { parent: 'customer.address.zip' } }, customer.address.zip),
+              td({ dataset: { parent: 'customer.verified' } }, String(customer.verified))))
           )).catch(error => console.error(error));
     });
   </script>
