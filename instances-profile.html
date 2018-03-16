@@ -237,6 +237,19 @@
       return tmpParent;
     }
 
+    const store = {};
+
+    function renderCustomers(customers) {
+      return customers.map((customer, index) => tr(
+        td({ dataset: { parent: 'customer.id' } }, customer.id),
+        td({ dataset: { parent: 'customer.name.first' } }, customer.name.first),
+        td({ dataset: { parent: 'customer.name.last' } }, customer.name.last),
+        td({ dataset: { parent: 'customer.address.street' } }, customer.address.street),
+        td({ dataset: { parent: 'customer.address.city' } }, customer.address.city),
+        td({ dataset: { parent: 'customer.address.zip' } }, customer.address.zip),
+        td({ dataset: { parent: 'customer.verified' } }, String(customer.verified))));
+    }
+
     document.addEventListener('DOMContentLoaded', (evt) => {
       fetch('customers.json')
         .then(response => {
@@ -247,18 +260,10 @@
           }
         }
         )
-        .then(customers =>
-          replaceChildren(
-            document.querySelector('tbody'),
-            customers.map(customer => tr(
-              td({ dataset: { parent: 'customer.id' } }, customer.id),
-              td({ dataset: { parent: 'customer.name.first' } }, customer.name.first),
-              td({ dataset: { parent: 'customer.name.last' } }, customer.name.last),
-              td({ dataset: { parent: 'customer.address.street' } }, customer.address.street),
-              td({ dataset: { parent: 'customer.address.city' } }, customer.address.city),
-              td({ dataset: { parent: 'customer.address.zip' } }, customer.address.zip),
-              td({ dataset: { parent: 'customer.verified' } }, String(customer.verified))))
-          )).catch(error => console.error(error));
+        .then(customers => replaceChildren(document.querySelector('tbody'),
+          renderCustomers(customers))
+        ).catch(error => console.error(error));
+      document.querySelector('table').addEventListener('click', evt => console.log(evt.target));
     });
   </script>
 </head>
