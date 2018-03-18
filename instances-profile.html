@@ -10,9 +10,7 @@
       padding: 0.5em 1em;
     }
 
-    table {
-      font-size: 0.85em;
-    }
+    table {}
 
     table.entity {
       width: 100%;
@@ -20,22 +18,39 @@
       font-family: 'InputMono', 'Consolas', monospace;
     }
 
+    body>table,
     th,
     td {
-      padding: 0.25em 0.5em;
+      border-width: 1px;
+      border-color: #ccc;
+      border-style: solid;
+    }
+
+    th,
+    td {
+      padding: 0;
       vertical-align: top;
       text-align: left;
-      border: solid 1px #ccc;
+      border-style: none solid solid none;
+    }
+
+    table.entity table.entity td:last-child {
+      border-right-style: none;
+    }
+
+    table.entity table.entity tr:last-child td {
+      border-bottom-style: none;
+    }
+
+    th,
+    td.atomic {
+      padding: 0.25em 0.5em;
     }
 
     thead {}
 
     thead th {
       font-weight: normal;
-    }
-
-    tbody {
-      border-top: solid 4px #333;
     }
 
     pre {
@@ -245,14 +260,21 @@
 
     function renderCustomers(customers) {
       return customers.map((customer, index) => tr(
-        td({ dataset: { parent: 'customer.id' } }, customer.id),
-        td({ dataset: { parent: 'customer.name.first' } }, customer.name.first),
-        td({ dataset: { parent: 'customer.name.last' } }, customer.name.last),
+        td({ dataset: { parent: 'customer.id' }, className: 'atomic' }, customer.id),
+        td({ dataset: { parent: 'customer.name.first' }, className: 'atomic' }, customer.name.first),
+        td({ dataset: { parent: 'customer.name.last' }, className: 'atomic', className: 'atomic' }, customer.name.last),
         td({ dataset: { parent: 'customer.address.street' } }, customer.address.street),
-        td({ dataset: { parent: 'customer.address.city' } }, customer.address.city),
-        td({ dataset: { parent: 'customer.address.zip' } }, customer.address.zip),
-        td({ dataset: { parent: 'customer.notes' } }, JSON.stringify(customer.notes)),
-        td({ dataset: { parent: 'customer.verified' } }, String(customer.verified))));
+        td({ dataset: { parent: 'customer.address.city' }, className: 'atomic' }, customer.address.city),
+        td({ dataset: { parent: 'customer.address.zip' }, className: 'atomic' }, customer.address.zip),
+        td({ dataset: { parent: 'customer.notes' } }, renderNotes(customer.notes)),
+        td({ dataset: { parent: 'customer.verified' }, className: 'atomic' }, String(customer.verified))));
+    }
+
+    function renderNotes(notes) {
+      return table(
+        tbody(notes.map(note => tr(td(note.timestamp, { className: 'atomic' }), td(note.text, { className: 'atomic' })))),
+        { className: 'entity', }
+      )
     }
 
     document.addEventListener('DOMContentLoaded', (evt) => {

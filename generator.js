@@ -53,7 +53,10 @@ for (let i = 0; i < 100; i++) {
       zip: f.address.zipCode()
     },
     //notes: several(f.lorem.sentence, () => normal(Math.random() * 10, 3, 8)),
-    notes: several(f.lorem.sentence, () => Math.random() * 5),
+    notes: several(() => ({
+      timestamp: f.date.recent(),
+      text: f.lorem.sentence()
+    }), () => Math.random() * 5),
     verified: f.random.boolean()
   });
 }
