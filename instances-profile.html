@@ -10,6 +10,10 @@
       padding: 0.5em 1em;
     }
 
+    table {
+      font-size: 0.85em;
+    }
+
     table.entity {
       width: 100%;
       border-collapse: collapse;
@@ -247,6 +251,7 @@
         td({ dataset: { parent: 'customer.address.street' } }, customer.address.street),
         td({ dataset: { parent: 'customer.address.city' } }, customer.address.city),
         td({ dataset: { parent: 'customer.address.zip' } }, customer.address.zip),
+        td({ dataset: { parent: 'customer.notes' } }, JSON.stringify(customer.notes)),
         td({ dataset: { parent: 'customer.verified' } }, String(customer.verified))));
     }
 
@@ -274,17 +279,18 @@
   <ul>
     <li>Mixed content</li>
     <li>Data types</li>
-    <li>Arrays and multiplicity</li>
+    <li>Arrays and multiplicity: Can we assume that the order of children doesn’t matter, as with JSON?</li>
   </ul>
   <table class="entity xml">
     <thead>
       <tr data-level="0">
-        <th colspan="7">customer</th>
+        <th colspan="8">customer</th>
       </tr>
       <tr data-level="1">
         <th colspan="1" rowspan="2" id="customer.@id" data-parent="customer">@id</th>
         <th colspan="2" id="customer.name" data-parent="customer">name</th>
         <th colspan="3" id="customer.address" data-parent="customer">address</th>
+        <th colspan="1" rowspan="2" id="customer.notes" data-parent="customer">notes</th>
         <th colspan="1" rowspan="2" id="customer.verified" data-parent="customer">verified</th>
       </tr>
       <tr data-level="2">
