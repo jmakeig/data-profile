@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "generate": "./generator.js > customers.json",
-    "start": "http-server ./ -p 3332"
+    "start": "http-server ./ -p 3332 -c-1"
   },
   "repository": {
     "type": "git",

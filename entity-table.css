@@ -1,0 +1,46 @@
+
+table.entity {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-family: 'InputMono', 'Consolas', monospace;
+}
+
+body > table,
+th,
+td {
+  border-width: 1px;
+  border-style: solid;
+  border-color: #ccc;
+}
+
+th,
+td {
+  padding: 0;
+
+  border-style: none solid solid none;
+
+  text-align: left;
+  vertical-align: top;
+}
+
+table.entity table.entity td:last-child {
+  border-right-style: none;
+}
+
+table.entity table.entity tr:last-child td {
+  border-bottom-style: none;
+}
+
+th,
+td.atomic {
+  padding: 0.25em 0.5em;
+}
+
+thead th {
+  color: #ccc;
+  font-weight: normal;
+
+  background: #333;
+}
