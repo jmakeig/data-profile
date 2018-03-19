@@ -56,6 +56,20 @@ function createElement(name) {
 }
 
 /**
+ * Marker class to differentiate DOM attributes from properties.
+ *
+ * @param {string} name
+ * @param {*} value - gets stringified eventually by `Element.prototype.setAttribute`
+ * @return {attr}
+ */
+function attr(name, value) {
+  if (!(this instanceof attr)) return new attr(name, value);
+  this.name = name;
+  this.value = value;
+  return this;
+}
+
+/**
  *
  * @param {Iterable|Node|string|Object} param
  * @param {Node} el
@@ -66,6 +80,11 @@ function applyToElement(param, el) {
     for (const item of param) {
       applyToElement(item, el);
     }
+    return el;
+  }
+
+  if (param instanceof attr) {
+    el.setAttribute(param.name, param.value);
     return el;
   }
 
