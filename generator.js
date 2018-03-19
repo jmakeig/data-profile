@@ -1,46 +1,64 @@
 #!/usr/bin/env node
 
-const f = require("faker");
+const f = require('faker');
 
 /**
- * Generate an array from random length between `min` and `max`, calling `fct` 
+ * Generate an array from random length between `min` and `max`, calling `fct`
  * to populate each item.
- * 
+ *
  * TODO: Support more than just uniform distribution
- * 
- * @param {function} fct 
+ *
+ * @param {function} fct
  * @param {function} dist
  */
 function several(fct, dist = () => Math.random() * 10) {
   const rand = dist();
   const length = Math.max(Math.floor(rand), 0);
-  //console.log(length);
+  // console.log(length);
   const coll = [];
   for (let i = 0; i < length; i++) {
     coll.push(fct());
   }
   return coll;
 }
-/*
-xquery version "1.0-ml";
-declare namespace local="local";
 
-declare function local:norm($x, $mean, $std-dev) {
-  math:exp(-0.5 * math:pow((($x - $mean) div $std-dev), 2)) div ($std-dev * math:sqrt(2 * math:pi()))
-};
+// https://github.com/robbrit/randgen/blob/master/lib/randgen.js#L21-L49
+// Generate normally-distributed random nubmers
+// Algorithm adapted from:
+// http://c-faq.com/lib/gaussian.html
+function normal(mean = 0.0, stdev = 1.0) {
+  var u1, u2, v1, v2, s;
+  if (normal.v2 === undefined) {
+    do {
+      u1 = Math.random();
+      u2 = Math.random();
 
-for $i in (1 to 1000)
-let $rand := (xdmp:random(5000) - 2500) div 1000
-return
-  $rand || " " || local:norm($rand, 0, 1)
+      v1 = 2 * u1 - 1;
+      v2 = 2 * u2 - 1;
+      s = v1 * v1 + v2 * v2;
+    } while (s === 0 || s >= 1);
 
-Given number $x, it fits it to a distribution with mean $mean and standard deviation $std-dev.
-*/
+    normal.v2 = v2 * Math.sqrt(-2 * Math.log(s) / s);
+    return stdev * v1 * Math.sqrt(-2 * Math.log(s) / s) + mean;
+  }
 
-function normal($x, $mean, $stddev) {
-  return Math.exp(-0.5 * Math.pow((($x - $mean) / $stddev), 2)) / ($stddev * Math.sqrt(2 * Math.PI));
+  v2 = normal.v2;
+  normal.v2 = undefined;
+  return stdev * v2 + mean;
 }
 
+// https://github.com/robbrit/randgen/blob/master/lib/randgen.js#L67-L81
+function poisson(lambda = 1) {
+  var l = Math.exp(-lambda),
+    k = 0,
+    p = 1.0;
+  do {
+    k++;
+    p *= Math.random();
+  } while (p > l);
+
+  return k - 1;
+}
 
 const customers = [];
 for (let i = 0; i < 100; i++) {
@@ -50,14 +68,17 @@ for (let i = 0; i < 100; i++) {
     address: {
       street: f.address.streetAddress(),
       city: f.address.city(),
-      zip: f.address.zipCode()
+      zip: f.address.zipCode(),
     },
-    //notes: several(f.lorem.sentence, () => normal(Math.random() * 10, 3, 8)),
-    notes: several(() => ({
-      timestamp: f.date.recent(),
-      text: f.lorem.sentence()
-    }), () => Math.random() * 5),
-    verified: f.random.boolean()
+    notes: several(
+      () => ({
+        timestamp: f.date.recent(),
+        text: f.lorem.sentence(),
+      }),
+      // () => normal(3, 5)
+      () => poisson(3)
+    ).sort((a, b) => a.timestamp - b.timestamp),
+    verified: f.random.boolean(),
   });
 }
 process.stdout.write(JSON.stringify(customers, null, 2));
