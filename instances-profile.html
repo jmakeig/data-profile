@@ -29,15 +29,16 @@
         td({ dataset: { parent: 'customer.address.street' } }, customer.address.street),
         td({ dataset: { parent: 'customer.address.city' }, className: 'atomic' }, customer.address.city),
         td({ dataset: { parent: 'customer.address.zip' }, className: 'atomic' }, customer.address.zip),
-        td({ dataset: { parent: 'customer.notes' } }, renderNotes(customer.notes)),
+        td({ dataset: { parent: 'customer.notes' } }, attr('colspan', 2), renderNotes(customer.notes)),
         td({ dataset: { parent: 'customer.verified' }, className: 'atomic' }, String(customer.verified))));
     }
 
     function renderNotes(notes) {
       return table(
+        { className: 'entity', },
+        // notes.length ? thead(tr(th('timestamp'), th('text'))) : undefined,
         tbody(notes.map(note => tr(td(note.timestamp, { className: 'atomic' }), td(note.text, { className: 'atomic' })))),
-        { className: 'entity', }
-      )
+      );
     }
 
     document.addEventListener('DOMContentLoaded', (evt) => {
@@ -69,13 +70,13 @@
   <table class="entity xml">
     <thead>
       <tr data-level="0">
-        <th colspan="8">customer</th>
+        <th colspan="9">customer</th>
       </tr>
       <tr data-level="1">
         <th colspan="1" rowspan="2" id="customer.@id" data-parent="customer">@id</th>
         <th colspan="2" id="customer.name" data-parent="customer">name</th>
         <th colspan="3" id="customer.address" data-parent="customer">address</th>
-        <th colspan="1" rowspan="2" id="customer.notes" data-parent="customer">notes</th>
+        <th colspan="2" rowspan="1" id="customer.notes" data-parent="customer">notes</th>
         <th colspan="1" rowspan="2" id="customer.verified" data-parent="customer">verified</th>
       </tr>
       <tr data-level="2">
@@ -84,6 +85,8 @@
         <th id="customer.name.street" data-parent="customer.address">street</th>
         <th id="customer.address.city" data-parent="customer.address">city</th>
         <th id="customer.address.zip" data-parent="customer.address">zip</th>
+        <th id="customer.notes.timestamp" data-parent="customer.notes">timestamp</th>
+        <th id="customer.notes.text" data-parent="customer.notes">text</th>
       </tr>
     </thead>
     <tbody>

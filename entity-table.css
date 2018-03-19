@@ -25,11 +25,13 @@ td {
   vertical-align: top;
 }
 
-table.entity table.entity td:last-child {
+table.entity table.entity td:last-child ,
+table.entity table.entity thead th:last-child{
   border-right-style: none;
 }
 
-table.entity table.entity tr:last-child td {
+table.entity table.entity tr:last-child td,
+table.entity table.entity thead tr:last-child th {
   border-bottom-style: none;
 }
 
