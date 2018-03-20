@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Table</title>
+  <link rel="stylesheet" type="text/css" href="" />
+  <script type="application/javascript" src=""></script>
+  <style type="text/css">
+    table {
+      width: 100%;
+      font-family: 'InputMono', 'Consolas', monospace;
+    }
+
+    th,
+    td {
+      border: solid 1px #ccc;
+      padding: 0.5em 0.5em;
+      vertical-align: top;
+      text-align: left;
+    }
+
+  </style>
+  <script type="text/javascript">
+    const doc = {
+      a: "A", /* 1 */
+      b: "B", /* 1 */
+      c: [
+        "C0" /* 1 */, "C1", /* 2 */ "C2" /* 3 */
+      ],
+      d: [
+        { e: "E0", f: "F0" }, /* 1 */
+        { e: "E1", f: "F1" }, /* 2 */
+        { e: "E2", f: "F2" }, /* 3 */
+        { e: "E3", f: "F3" }  /* 4 */
+      ],
+      g: { h: { i: "I", j: "J" } } /* 1 */
+    };
+
+    function traverse(obj, level = 1) {
+
+    }
+    document.addEventListener('DOMContentLoaded', evt => {
+      const table = document.querySelector('#dyn');
+
+    });
+  </script>
+</head>
+
+<body>
+  <table id="static">
+    <thead>
+      <tr>
+        <th rowspan="4">a</th>
+        <th rowspan="4">b</th>
+        <th rowspan="4">c</th>
+        <th colspan="2">d</th>
+        <th colspan="2">g</th>
+      </tr>
+      <tr>
+        <th rowspan="3">e</th>
+        <th rowspan="3">f</th>
+      </tr>
+      <tr>
+        <th colspan="2">h</th>
+      </tr>
+      <tr>
+        <th>i</th>
+        <th>j</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td rowspan="4">A</td>
+        <td rowspan="4">B</td>
+        <td>C0</td>
+        <td>E0</td>
+        <td>F0</td>
+        <td rowspan="4">I</td>
+        <td rowspan="4">J</td>
+      </tr>
+      <tr>
+        <td>C1</td>
+        <td>E1</td>
+        <td>F1</td>
+      </tr>
+      <tr>
+        <td rowspan="2">C2</td>
+        <td>E2</td>
+        <td>F2</td>
+      </tr>
+      <tr>
+        <td>E3</td>
+        <td>E4</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <pre>
+{
+  a: "A",
+  b: "B",
+  c: [
+    "C0"
+  ],
+  d: [
+    { e: "E0", f: "F0" }, 
+    { e: "E1", f: "F1" }, 
+    { e: "E2", f: "F2" }, 
+    { e: "E3", f: "F3" }  
+  ],
+  g: { h: { i: "I", j: "J" } } 
+}
+  </pre>
+
+  <table id="dyn"></table>
+</body>
+
+</html>
