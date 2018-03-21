@@ -65,8 +65,65 @@
       g: { h: { i: "I", j: "J" } } /* 1 */
     };
 
-    function traverse(obj, level = 1) {
+    // ["A", "B", ["C0", "C1", "C2"], [{e: "E0", f: "F0"}, {e: "E1", f: "F1"}, {e: "E2", f: "F2"}, {e: "E3", f: "F3"}], "I", "J"]
 
+    function traverse(obj, accumulator = []) {
+      for (const prop of Object.getOwnPropertyNames(obj)) {
+        const item = obj[prop];
+        if (isPrimitiveOrNull(item)) {
+          accumulator.push(item);
+        } else if (Array.isArray(item)) {
+          accumulator.push(item);
+        } else {
+          traverse(item, accumulator);
+        }
+      }
+      return accumulator;
+    }
+    console.log(traverse(doc));
+
+    /*
+        function traverse(obj) {
+          let level = 0, col = 0;
+          const next = [];
+          const rows = [];
+    
+          function walk(obj) {
+            for (const prop of Object.getOwnPropertyNames(obj)) {
+              const item = obj[prop];
+              if (isPrimitiveOrNull(item)) {
+                rows[level][col++] = item;
+              } else if (Array.isArray(item)) {
+                if (level < item.length - 1) {
+                  rows[level][col++] = item[]
+                  next.push(item);
+                }
+              }
+            }
+          }
+    
+        }
+    */
+    function isPrimitiveOrNull(value) {
+      if (null === value) return true;
+      switch (typeof value) {
+        case 'undefined':
+        case 'string':
+        case 'number':
+        case 'boolean':
+        case 'symbol':
+        case 'function':
+          return true;
+        case 'object':
+          return value instanceof Date;
+        default: return false;
+      }
+    }
+    function isNullOrUndefined(value) {
+      return 'undefined' === typeof value || null === value;
+    }
+    function isObject(value) {
+      return !isPrimitiveOrNull(value) && 'object' === typeof value;
     }
     document.addEventListener('DOMContentLoaded', evt => {
       const table = document.querySelector('#dyn');
