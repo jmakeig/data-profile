@@ -125,23 +125,28 @@
     function tablify(flat) {
       const rows = [], rest = [];
       let current = flat;
-      let depth = 0, index = 0;
+      let depth = -1;
 
-      {
+      do {
+        depth++;
+        let index = 0;
         rows[depth] = [];
         for (let c = 0; c < current.length; c++) {
           const item = current[c];
           if (Array.isArray(item)) {
             const first = item.shift();
             rows[depth] = rows[depth].concat(first);
-            rest.push(item);
+            if (item.length > 0) {
+              rest.push(item);
+            }
             index += first.length;
           } else {
             rows[depth][index] = item;
             index++;
           }
         }
-      }
+        current = Array.from(rest);
+      } while (rest.length > 0)
       return rows;
     }
 
