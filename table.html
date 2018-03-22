@@ -59,13 +59,13 @@
       d: [
         { e: "E0", f: "F0" }, /* 1 */
         { e: "E1", f: "F1" }, /* 2 */
-        { e: "E2", f: "F2", x: [1, 2, 3] }, /* 3 */
+        { e: "E2", f: "F2", k: [1, 2, 3] }, /* 3 */
         { e: "E3", f: "F3" }  /* 4 */
       ],
       g: { h: { i: "I", j: "J" } } /* 1 */
     };
 
-    // ["A", "B", ["C0", "C1", "C2"], [{e: "E0", f: "F0"}, {e: "E1", f: "F1"}, {e: "E2", f: "F2"}, {e: "E3", f: "F3"}], "I", "J"]
+    // ["A","B",[["C0"],["C1"],["C2"]],[["E0","F0"],["E1","F1"],["E2","F2",[[1],[2],[3]]],["E3","F3"]],"I","J"]
 
     /*
     ["A", "B", [["C0"], 
@@ -132,14 +132,26 @@
         let index = 0;
         rows[depth] = [];
         for (let c = 0; c < current.length; c++) {
-          const item = current[c];
+          let item = current[c];
           if (Array.isArray(item)) {
             const first = item.shift();
-            rows[depth] = rows[depth].concat(first);
+            let j = 0;
+            for (; j < first.length; j++) {
+              if (Array.isArray(first[j])) {
+                const second = first[j].shift();
+                if (second.length > 0) {
+                  rest.push(second);
+                }
+              } else {
+                rows[depth].push(first[j]);
+              }
+            }
             if (item.length > 0) {
               rest.push(item);
+            } else {
+              item = undefined;
             }
-            index += first.length;
+            index += j;
           } else {
             rows[depth][index] = item;
             index++;
