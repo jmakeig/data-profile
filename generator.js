@@ -11,15 +11,10 @@ const f = require('faker');
  * @param {function} fct
  * @param {function} dist
  */
-function several(fct, dist = () => Math.random() * 10) {
+function several(fct = () => undefined, dist = () => Math.random() * 10) {
   const rand = dist();
   const length = Math.max(Math.floor(rand), 0);
-  // console.log(length);
-  const coll = [];
-  for (let i = 0; i < length; i++) {
-    coll.push(fct());
-  }
-  return coll;
+  return Array.from(new Array(length), fct);
 }
 
 // https://github.com/robbrit/randgen/blob/master/lib/randgen.js#L21-L49
