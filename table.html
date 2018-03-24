@@ -82,11 +82,24 @@
                           ["E3", "F3"]], "I", "J"]
     */
 
-    function traverse(obj, accumulator = []) {
+    function* all(itr) {
+      for (const item of itr) {
+        yield* traverse(item);
+      }
+    }
+    function* propertyValues(obj) {
+      for (const prop of Object.getOwnPropertyNames(obj)) {
+        yield obj[prop];
+      }
+    }
+
+    function* traverse(obj) {
+      /*
       if (isPrimitiveOrNull(obj)) {
-        accumulator.push(obj);
+        return accumulator.push(obj);
       } else if (Array.isArray(obj)) {
-        accumulator.push(obj.map(item => traverse(item, [])));
+        const coll = [];
+        accumulator.push(obj.map(item => traverse(item, coll)));
       } else {
         for (const prop of Object.getOwnPropertyNames(obj)) {
           const item = obj[prop];
@@ -94,6 +107,17 @@
         }
       }
       return accumulator;
+      */
+      if (isPrimitiveOrNull(obj)) {
+        yield obj;
+      } else if (Array.isArray(obj)) {
+        yield Array.from(all(obj));
+      } else {
+        // for (const prop of Object.getOwnPropertyNames(obj)) {
+        //   yield* traverse(obj[prop]);
+        // }
+        yield Array.from(all(propertyValues(obj)));
+      }
     }
 
     function tablify1(flat) {
@@ -167,32 +191,11 @@
       } while (rest.length > 0)
       return rows;
     }
+    console.log(JSON.stringify(doc, null, 2));
+    console.log(JSON.stringify(...traverse(doc)));
+    console.log(...traverse(doc));
+    //console.log(tablify(traverse(doc)));
 
-    console.log(JSON.stringify(traverse(doc)));
-    console.log(tablify(traverse(doc)));
-
-    /*
-        function traverse(obj) {
-          let level = 0, col = 0;
-          const next = [];
-          const rows = [];
-    
-          function walk(obj) {
-            for (const prop of Object.getOwnPropertyNames(obj)) {
-              const item = obj[prop];
-              if (isPrimitiveOrNull(item)) {
-                rows[level][col++] = item;
-              } else if (Array.isArray(item)) {
-                if (level < item.length - 1) {
-                  rows[level][col++] = item[]
-                  next.push(item);
-                }
-              }
-            }
-          }
-    
-        }
-    */
     function isPrimitiveOrNull(value) {
       if (null === value) return true;
       switch (typeof value) {
@@ -289,7 +292,9 @@
         <td>1</td>
       </tr>
       <tr>
-        <td class="undefined" rowspan="3"><!-- leftovers from c.length > d.length --></td>
+        <td class="undefined" rowspan="3">
+          <!-- leftovers from c.length > d.length -->
+        </td>
         <td>2</td>
       </tr>
       <tr>
