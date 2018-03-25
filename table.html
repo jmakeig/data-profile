@@ -118,7 +118,26 @@
         yield new Set(all(propertyValues(obj)));
       }
     }
+
+    function paths(obj) {
+      function visit(o, f, parents = []) {
+        if (isPrimitiveOrNull(o)) {
+          f([...parents], o);
+        } else if (Array.isArray(o)) {
+          let index = 0;
+          for (const item of o) {
+            visit(item, f, [...parents, index++]);
+          }
+        } else {
+          for (const p of Object.getOwnPropertyNames(o)) {
+            visit(o[p], f, [...parents, p]);
+          }
+        }
       }
+      const out = new Map();
+      //visit(obj, (paths, value) => console.log(paths.join['.'], value));
+      visit(obj, (paths, value) => out.set(paths, value));
+      return out;
     }
 
 
@@ -215,10 +234,14 @@
       } while (rest.length > 0)
       return rows;
     }
-    console.log(JSON.stringify(doc, null, 2));
-    console.log(JSON.stringify(...traverse(doc)));
-    console.log(...traverse(doc));
-    //console.log(tablify(traverse(doc)));
+    // console.log(JSON.stringify(doc, null, 2));
+    // console.log(JSON.stringify(...traverse(doc)));
+    // console.log(...traverse(doc));
+    // console.log('tablify');
+    // console.log(tablify(traverse(doc)));
+    for (entry of paths(doc).entries()) {
+      console.log(entry[0].join('.'), entry[1]);
+    }
 
     function isPrimitiveOrNull(value) {
       if (null === value) return true;
@@ -241,6 +264,11 @@
     function isObject(value) {
       return !isPrimitiveOrNull(value) && 'object' === typeof value;
     }
+    function isIterable(obj, ignoreStrings = true) {
+      if (isNullOrUndefined(obj)) return false;
+      if ('string' === typeof obj) return !ignoreStrings;
+      return Boolean(obj[Symbol.iterator]);
+    };
     document.addEventListener('DOMContentLoaded', evt => {
       const table = document.querySelector('#dyn');
 
@@ -260,12 +288,12 @@
           "C0", "C1", "C2"
         ],
         d: [
-          { e: "E0", f: "F0" }, 
-          { e: "E1", f: "F1" }, 
+          { e: "E0", f: "F0" },
+          { e: "E1", f: "F1" },
           { e: "E2", f: "F2", k: [1, 2, 3] },
-          { e: "E3", f: "F3" }  
+          { e: "E3", f: "F3" }
         ],
-        g: { h: { i: "I", j: "J" } } 
+        g: { h: { i: "I", j: "J" } }
       };,…
     ]
       </pre>
