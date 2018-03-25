@@ -57,8 +57,8 @@
   </style>
   <script type="text/javascript">
     const doc = {
-      a: "A", /* 1 */
-      b: "B", /* 1 */
+      a: "AA", /* 1 */
+      b: "BBB", /* 1 */
       c: [
         "C0" /* 1 */, "C1", /* 2 */ "C2" /* 3 */
       ],
@@ -113,11 +113,35 @@
       } else if (Array.isArray(obj)) {
         yield Array.from(all(obj));
       } else {
-        // for (const prop of Object.getOwnPropertyNames(obj)) {
-        //   yield* traverse(obj[prop]);
-        // }
-        yield Array.from(all(propertyValues(obj)));
+        // Need to be able to differentiate between a set of property values
+        // and an array of items
+        yield new Set(all(propertyValues(obj)));
       }
+    }
+      }
+    }
+
+
+    function tablify(itr) {
+      let cols = [];
+      for (const item of itr) {
+        if (item instanceof Set) {
+          console.log('Set item', String(item));
+          cols = [...cols, 'string' === typeof item ? item : tablify(item)];
+        } else if (Array.isArray(item)) {
+          console.log('Array item', item.length, String(item[0]));
+          cols.push('string' === typeof item[0] ? item[0] : tablify(item[0]));
+          console.log('REST', item.slice(1));
+        } else {
+          console.log('Primitive', item);
+          cols.push(item);
+        }
+      }
+      return cols;
+    }
+
+    function flatten(array) {
+      return Array.isArray(array) ? [].concat.apply([], array.map(flatten)) : array;
     }
 
     function tablify1(flat) {
@@ -152,7 +176,7 @@
       return rows;
     }
 
-    function tablify(flat) {
+    function tablify2(flat) {
       const rows = [], rest = [];
       let current = flat;
       let depth = -1;
@@ -238,11 +262,11 @@
         d: [
           { e: "E0", f: "F0" }, 
           { e: "E1", f: "F1" }, 
-          { e: "E2", f: "F2", k: [1, 2, 3]  }, 
+          { e: "E2", f: "F2", k: [1, 2, 3] },
           { e: "E3", f: "F3" }  
         ],
         g: { h: { i: "I", j: "J" } } 
-      },…
+      };,…
     ]
       </pre>
   <h2>Output Table</h2>
