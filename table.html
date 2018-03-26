@@ -58,8 +58,8 @@
   <script type="text/javascript" src="util.js"></script>
   <script type="text/javascript">
     const doc = {
-      a: "AA", /* 1 */
-      b: "BBB", /* 1 */
+      a: "A", /* 1 */
+      b: "B", /* 1 */
       c: [
         "C0" /* 1 */, "C1", /* 2 */ "C2" /* 3 */
       ],
@@ -285,43 +285,101 @@
           }
         }
       }
-      const out = new PathMap();
-      visit(obj, (paths, value) => out.set(paths, { value }));
+      const out = [];
+      visit(obj, (path, value) => out.push({ path, value }));
       return out;
+    }
+
+    function shouldTake1(curr, prev) {
+      if (isUndefined(prev)) return true;
+
+      for (let i = 0; i < curr.length; i++) {
+        if (prev[i] !== curr[i]) {
+          return !(isNumber(curr[i]) && isNumber(prev[i]));
+        }
+      }
+      return false;
+    }
+
+    /*
+    console.assert(false === shouldTake(['c', 1], ['c', 0]));
+    console.assert(true === shouldTake(['x', 'y', 'z', 'a'], undefined));
+    console.assert(true === shouldTake(['x', 'y', 'z', 'a'], ['x', 'y', 'z', 'b']));
+    console.assert(false === shouldTake(['x', 'y', 0, 'z', 'a'], ['x', 'y', 1, 'z', 'NEW']));
+    console.assert(true === shouldTake(['x', 'NEW', 0, 'z', 'a'], ['x', 'y', 1, 'z', 'b']));
+    console.assert(true === shouldTake(['a'], ['b']));
+    console.assert(false === shouldTake(['c', 2], ['c', 1]));
+    console.assert(true === shouldTake(['d', 0, 'e'], ['c', 2]));
+    console.assert(true === shouldTake(['d', 0, 'f'], ['d', 0, 'e']));
+    console.assert(false === shouldTake(['d', 1, 'e'], ['d', 0, 'f']));
+    console.assert(true === shouldTake(["d", 2, "f"], ["d", 2, "e"]));
+    console.assert(true === shouldTake(["d", 2, "k", 0], ["d", 2, "f"]));
+    console.assert(false === shouldTake(["d", 2, "k", 1], ["d", 2, "k", 0]));
+
+    console.assert(true === shouldTake(["a"], undefined));
+    console.assert(true === shouldTake(["b"], ["a"]));
+    console.assert(true === shouldTake(["c", 0], ["b"]));
+    console.assert(false === shouldTake(["c", 1], ["c", 0]));
+    console.assert(false === shouldTake(["c", 2], ["c", 1]));
+    console.assert(true === shouldTake(["d", 0, "e"], ["c", 2]));
+    console.assert(true === shouldTake(["d", 0, "f"], ["d", 0, "e"]));
+    console.assert(false === shouldTake(["d", 1, "e"], ["d", 0, "f"]));
+    // AHHHHHHHHHHHHHHHHHHHHHHH! This can't be done with just curr and prev
+    console.assert(false === shouldTake(["d", 1, "f"], ["d", 1, "e"]));
+    console.assert(false === shouldTake(["d", 2, "e"], ["d", 1, "f"]));
+    console.assert(false === shouldTake(["d", 2, "f"], ["d", 2, "e"]));
+    console.assert(false === shouldTake(["d", 2, "k", 0], ["d", 2, "f"]));
+    console.assert(false === shouldTake(["d", 2, "k", 1], ["d", 2, "k", 0]));
+    console.assert(false === shouldTake(["d", 2, "k", 2], ["d", 2, "k", 1]));
+    console.assert(false === shouldTake(["d", 3, "e"], ["d", 2, "k", 2]));
+    console.assert(false === shouldTake(["d", 3, "f"], ["d", 3, "e"]));
+    console.assert(false === shouldTake(["g", "h", "i"], ["d", 3, "f"]));
+    console.assert(false === shouldTake(["g", "h", "j"], ["g", "h", "i"]));
+    */
+
+    function rightmostNumberIs(path, row) {
+      if ('undefined' === typeof path) return true;
+      for (let i = path.length - 1; i >= 0; i--) {
+        if ('number' === typeof path[i]) {
+          return path[i] === row;
+        }
+      }
+      return
+    }
+    function rows(p) {
+
+      let current = [...p], row = 0;
+      let rows = [], rest = [];
+      while (current.length > 0 && row < 10) {
+        rows[row] = [];
+        rest = [];
+        let prev = {};
+        for (item of current) {
+          // console.log(item.path, prev.path);
+          if (rightmostNumberIs(item.path, row)) {
+            rows[row].push(item);
+          } else {
+            // console.log('REST');
+            rest.push(item);
+          }
+          prev = Object.assign({}, item);
+        }
+        current = [...rest];
+        row++;
+      }
+      return rows;
     }
 
     const p = paths(doc);
     console.log(p);
+    console.log(p
+      .map((x, i, a) => `console.assert(false === shouldTake(${JSON.stringify(x.path)}, ${JSON.stringify(0 === i ? undefined : a[i - 1].path)}));`)
+      .join('\n'));
+    // console.log(rows(p));
 
-    function isPrimitiveOrNull(value) {
-      if (null === value) return true;
-      switch (typeof value) {
-        case 'undefined':
-        case 'string':
-        case 'number':
-        case 'boolean':
-        case 'symbol':
-        case 'function':
-          return true;
-        case 'object':
-          return value instanceof Date;
-      }
-      return false;
-    }
-    function isNullOrUndefined(value) {
-      return 'undefined' === typeof value || null === value;
-    }
-    function isObject(value) {
-      return !isPrimitiveOrNull(value) && 'object' === typeof value;
-    }
-    function isIterable(obj, ignoreStrings = true) {
-      if (isNullOrUndefined(obj)) return false;
-      if ('string' === typeof obj) return !ignoreStrings;
-      return Boolean(obj[Symbol.iterator]);
-    };
+
     document.addEventListener('DOMContentLoaded', evt => {
       const table = document.querySelector('#dyn');
-
     });
   </script>
 </head>
@@ -330,22 +388,23 @@
   <h2>Input Documents</h2>
   <p>The outer array holds a collection of entity instances. We can intially assume that the instances share a common structure. </p>
   <pre>
-    [
-      {
-        a: "A",
-        b: "B",
-        c: [
-          "C0", "C1", "C2"
-        ],
-        d: [
-          { e: "E0", f: "F0" },
-          { e: "E1", f: "F1" },
-          { e: "E2", f: "F2", k: [1, 2, 3] },
-          { e: "E3", f: "F3" }
-        ],
-        g: { h: { i: "I", j: "J" } }
-      };,…
-    ]
+[
+  {
+    a: "A",
+    b: "B",
+    c: [
+      "C0", "C1", "C2"
+    ],
+    d: [
+      { e: "E0", f: "F0" },
+      { e: "E1", f: "F1" },
+      { e: "E2", f: "F2", k: [1, 2, 3] },
+      { e: "E3", f: "F3" }
+    ],
+    g: { h: { i: "I", j: "J" } }
+  },
+  …
+]
       </pre>
   <h2>Output Table</h2>
   <table id="static">
@@ -395,7 +454,7 @@
       </tr>
       <tr>
         <td class="undefined" rowspan="3"></td>
-          <!-- leftovers from c.length > d.length -->
+        <!-- leftovers from c.length > d.length -->
         </td>
         <td>2</td>
       </tr>
