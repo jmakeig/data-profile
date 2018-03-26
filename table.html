@@ -119,27 +119,18 @@
       }
     }
 
-    function paths(obj) {
-      function visit(o, f, parents = []) {
-        if (isPrimitiveOrNull(o)) {
-          f([...parents], o);
-        } else if (Array.isArray(o)) {
-          let index = 0;
-          for (const item of o) {
-            visit(item, f, [...parents, index++]);
-          }
-        } else {
-          for (const p of Object.getOwnPropertyNames(o)) {
-            visit(o[p], f, [...parents, p]);
-          }
-        }
-      }
-      const out = new Map();
-      //visit(obj, (paths, value) => console.log(paths.join['.'], value));
-      visit(obj, (paths, value) => out.set(paths, value));
-      return out;
-    }
 
+
+
+
+    function startsWith(arr, seg) {
+      if (!Array.isArray(arr) || !Array.isArray(seg)) return false;
+      if (arr.length < seg.length) return false;
+      for (let i = 0; i < seg.length; i++) {
+        if (arr[i] !== seg[i]) return false;
+      }
+      return true;
+    }
 
     function tablify(itr) {
       let cols = [];
@@ -239,9 +230,67 @@
     // console.log(...traverse(doc));
     // console.log('tablify');
     // console.log(tablify(traverse(doc)));
-    for (entry of paths(doc).entries()) {
-      console.log(entry[0].join('.'), entry[1]);
+
+    /*
+    class Path extends Array {
+      clone(extras = []) {
+        return new Path(...this, ...extras);
+      }
+      [Symbol.toPrimitive](hint) {
+        return this.join('.');
+      }
     }
+    console.assert(new Path('a', 'b', 'c').length === 3);
+    console.assert(String(new Path('a', 'b', 'c')) === 'a.b.c');
+    */
+
+    class PathMap extends Map {
+      bySegement(segment) {
+        if (!Array.isArray(segment)) throw new TypeError();
+        const map = new PathMap();
+        for (const entry of this.entries()) {
+          if (startsWith(entry[0], segment)) {
+            map.set(entry[0], entry[1]);
+          }
+        }
+        return map;
+      }
+      reduceArrays() {
+        const map = new PathMap();
+        for (const entry of this.entries()) {
+          const path = entry[0].filter(segment => 'number' !== typeof segment);
+          map.set(path, 'stuff');
+        }
+        return map;
+      }
+      get [Symbol.toStringTag]() {
+        return '\n' + Array.from(this.entries())
+          .map(entry => `${entry[0].join('.')}: ${entry[1]}`)
+          .join('\n');
+      }
+    }
+    function paths(obj) {
+      function visit(o, f, parents = []) {
+        if (isPrimitiveOrNull(o)) {
+          f([...parents], o);
+        } else if (Array.isArray(o)) {
+          let index = 0;
+          for (const item of o) {
+            visit(item, f, [...parents, index++]);
+          }
+        } else {
+          for (const p of Object.getOwnPropertyNames(o)) {
+            visit(o[p], f, [...parents, p]);
+          }
+        }
+      }
+      const out = new PathMap();
+      visit(obj, (paths, value) => out.set(paths, { value }));
+      return out;
+    }
+
+    const p = paths(doc);
+    console.log(p);
 
     function isPrimitiveOrNull(value) {
       if (null === value) return true;
