@@ -372,8 +372,8 @@
     </thead>
     <tbody data-rownum="1">
       <tr>
-        <td rowspan="7">A</td>
-        <td rowspan="7">B</td>
+        <td rowspan="6">A</td>
+        <td rowspan="6">B</td>
         <td>C0</td>
         <td>E0</td>
         <td>F0</td>
@@ -409,6 +409,70 @@
       </tr>
     </tbody>
   </table>
+  <h2>Output HTML</h2>
+  <pre>
+&lt;table id="static"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th rowspan="4"&gt;a&lt;/th&gt;
+        &lt;th rowspan="4"&gt;b&lt;/th&gt;
+        &lt;th rowspan="4"&gt;c&lt;/th&gt;
+        &lt;th colspan="3"&gt;d&lt;/th&gt;
+        &lt;th colspan="2"&gt;g&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th rowspan="3"&gt;e&lt;/th&gt;
+        &lt;th rowspan="3"&gt;f&lt;/th&gt;
+        &lt;th rowspan="3"&gt;k&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th colspan="2"&gt;h&lt;/th&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;th&gt;i&lt;/th&gt;
+        &lt;th&gt;j&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody data-rownum="1"&gt;
+      &lt;tr&gt;
+        &lt;td rowspan="6"&gt;A&lt;/td&gt;
+        &lt;td rowspan="6"&gt;B&lt;/td&gt;
+        &lt;td&gt;C0&lt;/td&gt;
+        &lt;td&gt;E0&lt;/td&gt;
+        &lt;td&gt;F0&lt;/td&gt;
+        &lt;td class="undefined"&gt;&lt;/td&gt;
+        &lt;td rowspan="6"&gt;I&lt;/td&gt;
+        &lt;td rowspan="6"&gt;J&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;C1&lt;/td&gt;
+        &lt;td&gt;E1&lt;/td&gt;
+        &lt;td&gt;F1&lt;/td&gt;
+        &lt;td class="undefined"&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;C2&lt;/td&gt;
+        &lt;td rowspan="3"&gt;E2&lt;/td&gt;
+        &lt;td rowspan="3"&gt;F2&lt;/td&gt;
+        &lt;td&gt;1&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td class="undefined" rowspan="3"&gt;&lt;/td&gt;
+        &lt;!-- leftovers from c.length &gt; d.length --&gt;
+        &lt;/td&gt;
+        &lt;td&gt;2&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;3&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;E3&lt;/td&gt;
+        &lt;td&gt;F3&lt;/td&gt;
+        &lt;td class="undefined"&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+</pre>
   <table id="dyn"></table>
 </body>
 
