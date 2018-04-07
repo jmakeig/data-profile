@@ -32,46 +32,137 @@ function toColumns(data) {
   const SEPERATOR = '.';
   const EMPTY = Symbol.for('EMPTY');
 
-  function traverse(item, path, index) {
+  function traverse(item, header, path) {
     if (isPrimitiveOrNull(item)) {
-      pushPath(index, path, item);
+      pushPath(header, path, item);
     } else if (Array.isArray(item)) {
       if (0 === item.length) {
-        pushPath(index, `${path}[]`, EMPTY);
+        pushPath(header, `${path}[]`, EMPTY);
       } else {
         for (let i = 0; i < item.length; i++) {
-          traverse(item[i], `${path}[${i}]`, index);
+          traverse(item[i], header, `${path}[${i}]`);
         }
       }
     } else {
-      for (let p in item) {
-        traverse(item[p], [path, p].join(SEPERATOR), index);
+      const props = Object.getOwnPropertyNames(item);
+      if (0 === props.length) {
+        pushPath(header, path, EMPTY);
+      } else {
+        for (let p = 0; p < props.length; p++) {
+          traverse(
+            item[props[p]],
+            [header, props[p]].join(SEPERATOR),
+            [path, props[p]].join(SEPERATOR)
+          );
+        }
       }
     }
   }
 
-  const result = {};
+  const columns = {};
 
-  /**
-   *
-   * @param {number} index - the index of the top-level item
-   * @param {string} path - path string
-   * @param {*} value - primitive value
-   */
-  function pushPath(index, path, value) {
-    console.log(index, path, value);
+  function pushPath(header, path, value) {
+    console.log(header, path, value);
+    if (undefined === columns[header]) {
+      columns[header] = {};
+    }
+    columns[header][path] = value;
   }
 
-  for (let i = 0; i < data.length; i++) {
-    traverse(data[i], '', i);
-  }
+  // for (let i = 0; i < data.length; i++) {
+  //   traverse(data[i], '', '');
+  // }
+  traverse(data, '', '');
+  return columns;
 }
-const doc = [
-  { name: { first: 'F0', last: 'L0' }, notes: [] },
-  { name: {}, notes: [{ a: 'A0', b: 'B0' }, { a: 'A1', b: 'B1' }] },
-  { name: { first: 'F2', last: 'L2' }, notes: [] },
+
+function toRows(cols) {
+  const rows = [];
+  function traverse(columns) {
+    const row = [];
+    for (let col in columns) {
+    }
+  }
+  function addRow(row) {
+    rows.push(row);
+  }
+  traverse(cols);
+  return rows;
+}
+
+/**
+ * Shallow copy of all but one property.
+ *
+ * @param {object} obj
+ * @param {string} [prop]
+ * @return {object}
+ */
+function allBut(obj, prop) {
+  const tmp = Object.assign({}, obj);
+  if (prop) delete tmp[prop];
+  return tmp;
+}
+
+function startsWith(path, index) {
+  const segments = path.split('.');
+  return segments[0] === `[${index}]`;
+}
+// const doc = [
+//   { name: { first: 'F0', last: 'L0' }, notes: [] },
+//   { name: {}, notes: [{ a: 'A0', b: 'B0' }, { a: 'A1', b: 'B1' }] },
+//   { name: { first: 'F2', last: 'L2' }, notes: [] },
+// ];
+
+const docs = [
+  {
+    id: 'e7e9879a-d242-40d1-a697-d12306e2b992',
+    name: {
+      first: 'Ruben',
+      last: 'Hamill',
+    },
+    address: {
+      street: '6758 Marvin Greens',
+      city: 'Marianotown',
+      zip: '82435-8332',
+    },
+    notes: [
+      {
+        timestamp: '2018-03-18T09:53:21.698Z',
+        text: 'Magnam hic vitae id corrupti ea voluptas accusamus minima nam.',
+        things: [1, [2, 2, { stuff: 2 }], 3],
+      },
+      {
+        timestamp: '2018-03-18T11:36:54.486Z',
+        text: 'Nihil non quasi ullam repellendus magni.',
+      },
+      {
+        timestamp: '2018-03-19T04:44:55.980Z',
+        text:
+          'Consectetur dolorem veniam nam voluptates explicabo soluta asperiores vitae id.',
+        things: [4, 5, [6, { stuff: 6 }, 6]],
+      },
+    ],
+    verified: false,
+  },
+  {
+    id: '30d623ff-a0af-4730-a231-42a984d535be',
+    name: {
+      first: 'Domingo',
+      last: 'Streich',
+    },
+    address: {
+      street: '658 Jennie Ford',
+      city: 'Anissaborough',
+      zip: '19746',
+    },
+    notes: [],
+    verified: true,
+  },
 ];
 
-console.log(JSON.stringify(doc, null, 2));
-console.log(tabulate.array(doc));
-// console.log(toColumns(doc));
+console.log(JSON.stringify(docs, null, 2));
+console.log(tabulate.array(docs));
+const cols = toColumns(docs);
+console.log(cols);
+// const rows = toRows(cols);
+// console.log(rows);
