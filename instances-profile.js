@@ -4,14 +4,15 @@ function renderCustomers(customers) {
   return customers.map((customer, index) =>
     tr(
       td(
+        attr('rowspan', 2),
         { dataset: { parent: 'customer.id' }, className: 'atomic' },
         customer.id
       ),
-      td(
+      td(attr('rowspan', 2),
         { dataset: { parent: 'customer.name.first' }, className: 'atomic' },
         customer.name.first
       ),
-      td(
+      td(attr('rowspan', 2),
         {
           dataset: { parent: 'customer.name.last' },
           className: 'atomic',
@@ -19,22 +20,25 @@ function renderCustomers(customers) {
         },
         customer.name.last
       ),
-      td(
+      td(attr('rowspan', 2),
         { dataset: { parent: 'customer.address.street' } },
         customer.address.street
       ),
-      td(
+      td(attr('rowspan', 2),
         { dataset: { parent: 'customer.address.city' }, className: 'atomic' },
         customer.address.city
       ),
       td(
+        attr('rowspan', 2),
         { dataset: { parent: 'customer.address.zip' }, className: 'atomic' },
         customer.address.zip
       ),
       td(
         { dataset: { parent: 'customer.notes' } },
-        attr('colspan', 2),
-        renderNotes(customer.notes)
+        renderNotes([
+          { timestamp: 1, text: 'one' },
+          { timestamp: 2, text: 'two' },
+        ])
       ),
       td(
         { dataset: { parent: 'customer.verified' }, className: 'atomic' },
@@ -45,16 +49,11 @@ function renderCustomers(customers) {
 }
 
 function renderNotes(notes) {
-  return table(
-    { className: 'entity' },
-    // notes.length ? thead(tr(th('timestamp'), th('text'))) : undefined,
-    tbody(
-      notes.map(note =>
-        tr(
-          td(note.timestamp, { className: 'atomic' }),
-          td(note.text, { className: 'atomic' })
-        )
-      )
+  return;
+  notes.map(note =>
+    tr(
+      td(note.timestamp, { className: 'atomic' }),
+      td(note.text, { className: 'atomic' })
     )
   );
 }

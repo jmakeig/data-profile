@@ -64,9 +64,9 @@ function toColumns(data) {
   function pushPath(header, path, value) {
     console.log(header, path, value);
     if (undefined === columns[header]) {
-      columns[header] = {};
+      columns[header] = { paths: [] };
     }
-    columns[header][path] = value;
+    columns[header].paths.push({ path, value });
   }
 
   // for (let i = 0; i < data.length; i++) {
@@ -78,14 +78,44 @@ function toColumns(data) {
 
 function toRows(cols) {
   const rows = [];
-  function traverse(columns) {
+  const headers = Object.getOwnPropertyNames(cols);
+
+  function traverse(leftovers, index) {
     const row = [];
-    for (let col in columns) {
+    let colNum = 0;
+    let newIndex = index;
+    const pruned = Object.assign({}, leftovers);
+    let hasHit = false;
+    for (const h of headers) {
+      const firstPath = leftovers[h].paths[0];
+      // AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+      // …HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH!
+      colNum++;
+      row[colNum] = undefined;
+      if (firstPath && index === getIndex(firstPath.path)) {
+        row[colNum] = firstPath.value;
+        pruned[h] = leftovers[h].paths.slice(1);
+        hasHit = true;
+      }
     }
+    if (hasHit) {
+      addRow(row);
+    } else {
+      newIndex++;
+    }
+    traverse(pruned, newIndex);
   }
+
+  function getIndex(path) {
+    console.log(path);
+    const segments = path.split('.');
+    return parseInt(segments[0].substr(1, segments[0].length - 2), 10);
+  }
+
   function addRow(row) {
     rows.push(row);
   }
+
   traverse(cols);
   return rows;
 }
@@ -129,7 +159,9 @@ const docs = [
       {
         timestamp: '2018-03-18T09:53:21.698Z',
         text: 'Magnam hic vitae id corrupti ea voluptas accusamus minima nam.',
-        things: [1, [2, 2, { stuff: 2 }], 3],
+        things: [1, { stuff: 3 }, { more: 4 }],
+        // things: [1, 2, { stuff: 3, more: 4 }],
+        // things: [1, [2, 2, { stuff: 2 }], 3],
       },
       {
         timestamp: '2018-03-18T11:36:54.486Z',
@@ -139,7 +171,8 @@ const docs = [
         timestamp: '2018-03-19T04:44:55.980Z',
         text:
           'Consectetur dolorem veniam nam voluptates explicabo soluta asperiores vitae id.',
-        things: [4, 5, [6, { stuff: 6 }, 6]],
+        // things: [4, 5, [6, { stuff: 6 }, 6]],
+        things: [1, { stuff: 3 }, { more: 4 }], // Row order gets screwed up
       },
     ],
     verified: false,
@@ -161,8 +194,32 @@ const docs = [
 ];
 
 console.log(JSON.stringify(docs, null, 2));
-console.log(tabulate.array(docs));
+// console.log(tabulate.array(docs));
 const cols = toColumns(docs);
 console.log(cols);
-// const rows = toRows(cols);
-// console.log(rows);
+// console.log(JSON.stringify(cols, null, 2));
+const rows = toRows(cols);
+console.log(rows);
+
+// console.log(toTable(tabulate.array(docs)));
+
+function toTable(rows) {
+  // console.log(rows);
+
+  function toCell(value) {
+    if (undefined === value) {
+      return td({ class: 'empty' });
+    }
+    return td(String(value));
+  }
+
+  return table(
+    { class: 'entity' },
+    thead(rows[0].map(header => th(header))),
+    tbody(rows.slice(1).map(row => tr(row.map(cell => toCell(cell)))))
+  );
+}
+
+// document.addEventListener('DOMContentLoaded', evt => {
+//   document.body.appendChild(toTable(tabulate.array(docs)));
+// });

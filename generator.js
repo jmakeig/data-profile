@@ -11,10 +11,14 @@ const f = require('faker');
  * @param {function} fct
  * @param {function} dist
  */
-function several(fct = () => undefined, dist = () => Math.random() * 10) {
+function several(fct = () => undefined, dist = uniform) {
   const rand = dist();
   const length = Math.max(Math.floor(rand), 0);
   return Array.from(new Array(length), fct);
+}
+
+function uniform(min = 0, max = 10) {
+  return Math.random() * max + min;
 }
 
 // https://github.com/robbrit/randgen/blob/master/lib/randgen.js#L21-L49

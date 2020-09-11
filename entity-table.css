@@ -7,7 +7,7 @@ table.entity {
   font-family: 'InputMono', 'Consolas', monospace;
 }
 
-body > table,
+table,
 th,
 td {
   border-width: 1px;
@@ -25,8 +25,8 @@ td {
   vertical-align: top;
 }
 
-table.entity table.entity td:last-child ,
-table.entity table.entity thead th:last-child{
+table.entity table.entity td:last-child,
+table.entity table.entity thead th:last-child {
   border-right-style: none;
 }
 
@@ -36,7 +36,7 @@ table.entity table.entity thead tr:last-child th {
 }
 
 th,
-td.atomic {
+td {
   padding: 0.25em 0.5em;
 }
 

@@ -4,7 +4,7 @@ function columnize(data, headers, dot) {
       insert(val, path, hdr);
     } else if (val instanceof Array) {
       if (val.length === 0) {
-        insert(null, path, hdr);
+        // insert(null, path, hdr);
       } else {
         for (var i = 0; i < val.length; i++) {
           recurse(val[i], path + '[' + i + ']', hdr);
@@ -58,7 +58,7 @@ function rowify(columns) {
         } else if (columns[anHdr].hasOwnProperty(thisPath)) {
           row.push(columns[anHdr][thisPath]);
         } else {
-          var matched = null;
+          var matched = undefined;
           for (var aPath in columns[anHdr]) {
             var aValue = columns[anHdr][aPath];
             var min = Math.min(thisPath.length, aPath.length);
